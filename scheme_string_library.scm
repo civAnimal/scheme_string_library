@@ -30,23 +30,23 @@
 ; ... #f ... on failure
 ;
 (define (str-ends-with? str needle)
-  (let*
+  (let
     (
       (len_str (string-length str))
       (len_needle (string-length needle))
       (matched #t)
-      (delta (- len_str len_needle))
     )
-      (if (or (< delta 0) (zero? len_needle))
+      (if (or (< len_str len_needle) (zero? len_needle))
         #f
         (do
           (
-            (i 0 (+ i 1))
+            (i (- len_needle 1) (- i 1))
+            (j (- len_str 1) (- j 1))
           )
-          ((>= i len_needle) matched)
-          (unless (char=? (string-ref str (+ i delta)) (string-ref needle i))
+          ((< i 0) matched)
+          (unless (char=? (string-ref str j) (string-ref needle i))
             (set! matched #f)
-            (set! i len_needle)
+            (set! i 0)
           )
         )
       )
@@ -147,7 +147,7 @@
 ; ... () ... on failure
 ;
 (define (str-split str needle)
-  (let*
+  (let
     (
       (the_inxs (str-find-all str needle))
       (result '())
